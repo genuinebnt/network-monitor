@@ -1,4 +1,5 @@
 #include <boost/asio.hpp>
+#include <boost/beast.hpp>
 #include <boost/system/error_code.hpp>
 
 #include <iomanip>
@@ -6,49 +7,46 @@
 #include <thread>
 
 using tcp = boost::asio::ip::tcp;
+namespace beast = boost::beast;
+namespace net = boost::asio;
 
-void Log(boost::system::error_code ec) {
-  std::cerr << "[" << std::setw(14) << std::this_thread::get_id() << "] "
-            << (ec ? "Error: " : "OK") << (ec ? ec.message() : "") << std::endl;
+void Log(const std::string &where, boost::system::error_code ec) {
+  std::cerr << "[" << std::setw(20) << where << ":"
+            << std::this_thread::get_id() << "] " << (ec ? "Error: " : "OK")
+            << (ec ? ec.message() : "") << std::endl;
 }
 
-void OnConnect(boost::system::error_code ec) { Log(ec); }
-
 int main() {
-  std::cerr << "[" << std::setw(14) << std::this_thread::get_id() << "] main"
-            << std::endl;
-
-  boost::asio::io_context ioc{};
+  net::io_context ioc{};
 
   tcp::socket socket{ioc};
-
-  size_t nThreads{4};
 
   boost::system::error_code ec{};
 
   tcp::resolver resolver{ioc};
-
-  auto resolveIt{resolver.resolve("google.com", "80", ec)};
-
+  auto address{"ltnm.learncppthroughprojects.com"};
+  auto resolveIt{resolver.resolve(address, "80", ec)};
   if (ec) {
-    Log(ec);
+    Log("resolving", ec);
     return -1;
   }
 
-  for (size_t i{0}; i < nThreads; ++i) {
-    socket.async_connect(*resolveIt, OnConnect);
+  socket.connect(*resolveIt, ec);
+  beast::websocket::stream<beast::tcp_stream> ws(std::move(socket));
+
+  ws.handshake(address, "/echo");
+
+  ws.write(net::buffer(std::string("Hello there")));
+  beast::flat_buffer buffer;
+  ws.read(buffer);
+  if (ec) {
+    Log("ws.handshake", ec);
+    return -1;
   }
 
-  std::vector<std::thread> threads{};
-  threads.reserve(nThreads);
+  std::cout << beast::make_printable(buffer.data()) << std::endl;
 
-  for (size_t idx{0}; idx < nThreads; ++idx) {
-    threads.emplace_back([&ioc]() { ioc.run(); });
-  }
-
-  for (size_t idx{0}; idx < nThreads; ++idx) {
-    threads[idx].join();
-  }
+  ws.close(beast::websocket::close_code::normal);
 
   return 0;
 }
