@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/Users/genuinebasilnt/projects/network-monitor/build",
-  "command": "/usr/bin/c++ -isystem /Users/genuinebasilnt/.conan2/p/b/boost556f14b875042/p/include -stdlib=libc++ -O3 -DNDEBUG -std=gnu++17 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -o CMakeFiles/network-monitor.dir/src/main.cpp.o -c /Users/genuinebasilnt/projects/network-monitor/src/main.cpp",
-  "file": "/Users/genuinebasilnt/projects/network-monitor/src/main.cpp",
-  "output": "CMakeFiles/network-monitor.dir/src/main.cpp.o"
-}
-]
