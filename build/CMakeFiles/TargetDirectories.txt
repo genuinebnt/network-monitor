@@ -1,0 +1,3 @@
+/Users/genuinebasilnt/projects/network-monitor/build/CMakeFiles/network-monitor.dir
+/Users/genuinebasilnt/projects/network-monitor/build/CMakeFiles/edit_cache.dir
+/Users/genuinebasilnt/projects/network-monitor/build/CMakeFiles/rebuild_cache.dir

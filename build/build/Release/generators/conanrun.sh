@@ -1,0 +1,1 @@
+. "/Users/genuinebasilnt/projects/network-monitor/build/build/Release/generators/conanrunenv-release-armv8.sh"
