@@ -1,5 +1,9 @@
-cmake_minimum_required(VERSION 3.17)
-project(network_monitor)
+cmake_minimum_required(VERSION 4.0.1)
 
-add_executable(main main.cpp)
-target_compile_features(main PRIVATE cxx_std_17)
+project(network-monitor)
+
+set(SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
+
+add_executable(network-monitor ${SOURCES})
+
+target_compile_features(network-monitor PRIVATE cxx_std_11)
